@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置Service -->
+    <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl">
+        <property name="accountDao" ref="accountDao"/>
+    </bean>
+
+    <!-- 配置Dao -->
+    <bean id="accountDao" class="com.itheima.dao.impl.AccountDaoImpl1">
+        <property name="runner" ref="runner"/>
+    </bean>
+
+    <!-- 配置QueryRunner，注意要配置scope为多例，让每次操作都使用新的对象来操作 -->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner"
+          scope="prototype">
+        <!-- 注入数据源 -->
+        <constructor-arg name="ds" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 配置连接数据库的必备属性 -->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/eesy"/>
+        <property name="user" value="root"/>
+        <property name="password" value="hezihao123"/>
+    </bean>
+</beans>

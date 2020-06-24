@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl"/>
+
+    <!-- =================== 创建Bean的3种方式 =================== -->
+    <!--
+        1.构造方法创建：只配置id和class这2个属性时，使用该方式，如果没有默认构造函数，则无法创建
+
+        <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl"/>
+    -->
+
+    <!--
+        2.使用普通工厂中的方法创建普通对象（使用某个类中的方法创建对象，再放置到Spring容器中）
+        factory-bean：指定工厂类
+        factory-method：指定工厂方法
+
+        <bean id="instanceFactory" class="com.itheima.factory.InstanceFactory"/>
+        <bean id="accountService" factory-bean="instanceFactory" factory-method="getAccountService"/>
+    -->
+
+    <!--
+        使用工厂中的静态方法创建对象（使用某个类的静态方法创建对象，再放置到Spring容器中）
+        class：指定工厂类，这里不再指定AccountService的全类名，而是工厂类的全类名
+        factory-method：指定静态工厂方法
+
+        <bean id="accountService" class="com.itheima.factory.StaticFactory" factory-method="getAccountService"/>
+    -->
+
+    <!-- =================== Bean的作用范围 =================== -->
+
+    <!--
+        bean的作用范围
+            bean标签的scope属性：
+            作用：指定bean的作用范围
+            取值：
+                1.singleton：单例，默认值
+                2.prototype：多例
+                3.requestL：作用于web应用的请求范围
+                4.session：作用于web应用的会话范围
+                5.global-session：作用于集群环境的会话范围（全局会话范围），当不是集群范围时，它就是session
+
+        <bean id="accountService"
+          class="com.itheima.service.impl.AccountServiceImpl"
+          scope="prototype"/>
+     -->
+
+    <!-- =================== Bean的生命周期 =================== -->
+
+    <!--
+        bean对象的生命周期
+            单例对象
+                出生：当容器创建对象时
+                活着：只要容器还在，就一直活着
+                死亡：容器销毁，就消亡
+                总结：单例对象生命和容器相同
+            多例对象
+                出生：当使用对象时，Spring框架帮我们创建
+                活着：对象在使用过程中，就一直活着
+                死亡：当对象长时间不用，且没有别的对象应用时，由Java的垃圾回收器进行回收
+
+         <bean id="accountService"
+          class="com.itheima.service.impl.AccountServiceImpl"
+          init-method="init"
+          destroy-method="destroy"/>
+    -->
+
+    <!-- =================== Bean的依赖注入 =================== -->
+    <!--
+        Spring的依赖注入
+            Dependency Injection
+        IOC的作用
+            降低程序间的耦合（依赖关系）
+        依赖关系的管理
+            以后都交给了Spring来维护
+        在当前类需要用到其他类的对象，由spring为我们提供，我们只需要在配置文件中说明
+        依赖关系的维护就被称为依赖注入
+        依赖注入：
+            能注入的数据有3类：
+                1.基本数据类型和String
+                2.其他Bean类型（在配置文件或注解中配置过的bean）
+                3.复杂类型、集合类型
+            注入的方式：
+                1.构造函数
+                2.使用set方法
+                3.使用注解提供
+    -->
+
+    <!--
+    构造函数注入数据方式构建对象实例
+        使用的标签：constructor-arg
+        标签出现的位置：bean标签内
+        标签中的属性：
+            type：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型
+            index：用于指定要注入的数据在构造函数中，参数的索引位置，从0开始
+            name：用于指定给构造函数指定名称的参数赋值
+            =================== 以上三个用于给指定构造函数中哪个参数赋值 ===================
+            value：用于提供基本类型或String类型的数据
+            ref：用于指定其他Bean类型数据，指的是Spring核心容器中出现过的Bean对象
+
+         优势：
+            在获取Bean时，注入数据是必须的，否则对象无法创建成功
+         弊端：
+            改变bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供
+    -->
+    <bean id="constructorInjectBean" class="com.itheima.test.ConstructorInjectBean">
+        <!--        <constructor-arg-->
+        <!--                type="java.lang.String"-->
+        <!--                value="test"-->
+        <!--                index="0">-->
+        <!--        </constructor-arg>-->
+        <constructor-arg name="name" value="小罗"/>
+        <constructor-arg name="age" value="18"/>
+        <constructor-arg name="birthday" ref="now"/>
+    </bean>
+    <bean name="now" class="java.util.Date"/>
+
+    <!--
+    set方法注入
+        涉及标签：property
+        出现位置：bean标签的内部
+        标签属性
+            name：用于指定注入所调用的set方法
+            value：用于提供基本类型或String类型的数据
+            ref：用于指定其他Bean类型数据，指的是Spring核心容器中出现过的Bean对象
+         优势：
+            创建对象没有明确的限制，可以直接使用构造函数
+         劣势：
+            如果有某个成员必须有值，则获取对象是有可能，set方法没有执行
+    -->
+    <bean id="setMethodInjectBean" class="com.itheima.test.SetMethodInjectBean">
+        <property name="name" value="小何"/>
+        <property name="age" value="21"/>
+        <property name="birthday" ref="now"/>
+    </bean>
+
+    <!--
+        复杂类型注入、集合数据注入
+        用于给List结构集合注入的标签
+            list array set
+        用于给Map结构
+            map props
+        结构相同，标签可以互换
+    -->
+    <bean id="collectionInjectBean" class="com.itheima.test.CollectionInjectBean">
+        <property name="myStrs">
+            <array>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </array>
+        </property>
+        <property name="myList">
+            <list>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </list>
+        </property>
+        <property name="mySet">
+            <set>
+                <value>AAA</value>
+                <value>BBB</value>
+                <value>CCC</value>
+            </set>
+        </property>
+        <property name="myMap">
+            <map>
+                <entry key="testA" value="aaa"/>
+                <entry key="testB">
+                    <value>bbb</value>
+                </entry>
+            </map>
+        </property>
+        <property name="myProps">
+            <props>
+                <prop key="testC">ccc</prop>
+                <prop key="testD">ddd</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
