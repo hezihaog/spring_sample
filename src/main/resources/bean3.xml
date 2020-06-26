@@ -27,6 +27,10 @@
         <property name="connectionUtils" ref="connectionUtils"/>
     </bean>
 
+    <bean id="accountDao2" class="com.itheima.dao.impl.AccountDaoImpl2">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
     <!-- 配置QueryRunner，注意要配置scope为多例，让每次操作都使用新的对象来操作 -->
     <bean id="runner" class="org.apache.commons.dbutils.QueryRunner"
           scope="prototype">
@@ -50,6 +54,11 @@
 
     <!-- 配置连接工具类 -->
     <bean id="connectionUtils" class="com.itheima.util.ConnectionUtils">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 配置JdbcTemplate -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>
