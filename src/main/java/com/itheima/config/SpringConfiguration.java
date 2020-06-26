@@ -31,10 +31,13 @@ import org.springframework.context.annotation.*;
  * 属性：
  * value：指定文件的名称和文件的路径
  * 关键字：classpath，表示类路径下，如果有多层文件夹（包）下，则使用/分开
+ * 6.@EnableAspectJAutoProxy
+ * 作用：用于开启AOP的代理
  */
 @Configuration
 @Import(value = {JdbcConfig.class})
 @PropertySource("classpath:jdbcConfig.properties")
+@EnableAspectJAutoProxy
 @ComponentScan(basePackages = {"com.itheima"})
 public class SpringConfiguration {
 }
