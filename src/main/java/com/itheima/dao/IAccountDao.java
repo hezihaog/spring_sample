@@ -29,4 +29,9 @@ public interface IAccountDao {
      * 查询所有
      */
     List<Account> findAll();
+
+    /**
+     * 根据名称查询账户信息
+     */
+    Account findAccountByName(String name);
 }

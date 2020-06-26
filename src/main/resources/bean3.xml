@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置spring要扫描的包，必须加，否则下面的aop注解扫描不生效 -->
+    <context:component-scan base-package="com.itheima"/>
+    <!-- 配置AOP注解支持 -->
+    <aop:aspectj-autoproxy/>
 
     <!-- 配置Service -->
     <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl">
         <property name="accountDao" ref="accountDao"/>
+        <property name="txManager" ref="transactionManager"/>
     </bean>
 
     <!-- 配置Dao -->
-    <bean id="accountDao" class="com.itheima.dao.impl.AccountDaoImpl1">
+    <bean id="accountDao" class="com.itheima.dao.impl.AccountDaoImpl">
         <property name="runner" ref="runner"/>
+        <property name="connectionUtils" ref="connectionUtils"/>
     </bean>
 
     <!-- 配置QueryRunner，注意要配置scope为多例，让每次操作都使用新的对象来操作 -->
@@ -31,5 +41,15 @@
         <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/eesy"/>
         <property name="user" value="root"/>
         <property name="password" value="hezihao123"/>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="com.itheima.util.TransactionManager">
+        <property name="connectionUtils" ref="connectionUtils"/>
+    </bean>
+
+    <!-- 配置连接工具类 -->
+    <bean id="connectionUtils" class="com.itheima.util.ConnectionUtils">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>
