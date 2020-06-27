@@ -3,7 +3,6 @@ package com.itheima.service.impl;
 import com.itheima.dao.IAccountDao;
 import com.itheima.domain.Account;
 import com.itheima.service.IAccountService;
-import com.itheima.util.TransactionManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -104,11 +103,11 @@ public class AccountServiceImpl implements IAccountService {
      * ---------------- Xml配置时使用 ----------------
      */
 
-    private TransactionManager txManager;
-
-    public void setTxManager(TransactionManager txManager) {
-        this.txManager = txManager;
-    }
+//    private TransactionManager txManager;
+//
+//    public void setTxManager(TransactionManager txManager) {
+//        this.txManager = txManager;
+//    }
 
     @PostConstruct
     public void init() {
@@ -137,43 +136,24 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     public List<Account> findAllAccount() {
-        try {
-            txManager.beginTransaction();
-            List<Account> result = accountDao.findAll();
-            txManager.commit();
-            return result;
-        } catch (Exception e) {
-            txManager.rollback();
-            throw new RuntimeException(e);
-        } finally {
-            txManager.release();
-        }
+        return accountDao.findAll();
     }
 
     public void transfer(String sourceName, String targetName, Float money) {
-        try {
-            txManager.beginTransaction();
-            //1.查询转出账户
-            Account source = accountDao.findAccountByName(sourceName);
-            //2.查询转入账户
-            Account target = accountDao.findAccountByName(targetName);
-            if (source.getMoney() < money) {
-                throw new RuntimeException("转出账号的金额不足" + money + "元");
-            }
-            //3.转出账户扣钱
-            source.setMoney(source.getMoney() - money);
-            //4.转入账户加钱
-            target.setMoney(target.getMoney() + money);
-            //5.更新转出账户
-            accountDao.update(source);
-            //6.更新转入账户
-            accountDao.update(target);
-            txManager.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            txManager.rollback();
-        } finally {
-            txManager.release();
+        //1.查询转出账户
+        Account source = accountDao.findAccountByName(sourceName);
+        //2.查询转入账户
+        Account target = accountDao.findAccountByName(targetName);
+        if (source.getMoney() < money) {
+            throw new RuntimeException("转出账号的金额不足" + money + "元");
         }
+        //3.转出账户扣钱
+        source.setMoney(source.getMoney() - money);
+        //4.转入账户加钱
+        target.setMoney(target.getMoney() + money);
+        //5.更新转出账户
+        accountDao.update(source);
+        //6.更新转入账户
+        accountDao.update(target);
     }
 }

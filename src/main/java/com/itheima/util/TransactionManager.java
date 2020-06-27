@@ -1,10 +1,13 @@
 package com.itheima.util;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.SQLException;
 
 /**
  * 事务管理器，负责事务的开启、提交、回滚以及关闭连接
  */
+@Component
 public class TransactionManager {
     private ConnectionUtils connectionUtils;
 

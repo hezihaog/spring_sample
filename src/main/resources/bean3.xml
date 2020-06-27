@@ -18,7 +18,7 @@
     <!-- 配置Service -->
     <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl">
         <property name="accountDao" ref="accountDao"/>
-        <property name="txManager" ref="transactionManager"/>
+<!--        <property name="txManager" ref="transactionManager"/>-->
     </bean>
 
     <!-- 配置Dao -->

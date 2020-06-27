@@ -61,15 +61,15 @@ public class Logger {
             //方法执行的参数
             Object[] args = joinPoint.getArgs();
             //执行前置通知增强
-            System.out.println("环绕通知，前置增强...");
+            System.out.println("Logger => 环绕通知，前置增强...");
             //执行原本的方法
             rtValue = joinPoint.proceed(args);
-            System.out.println("环绕通知，后置增强...");
+            System.out.println("Logger => 环绕通知，后置增强...");
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            System.out.println("环绕通知，异常增强...");
+            System.out.println("Logger => 环绕通知，异常增强...");
         } finally {
-            System.out.println("环绕通知，最终增强...");
+            System.out.println("Logger => 环绕通知，最终增强...");
         }
         return rtValue;
     }

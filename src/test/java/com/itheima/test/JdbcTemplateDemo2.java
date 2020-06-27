@@ -21,6 +21,7 @@ public class JdbcTemplateDemo2 {
         //测试查询
         Account account = dao.findById(2);
         System.out.println(account);
+        System.out.println("---------------------------");
         //测试更新
         account.setMoney(10000f);
         dao.update(account);
