@@ -2,9 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/context
@@ -18,7 +21,7 @@
     <!-- 配置Service -->
     <bean id="accountService" class="com.itheima.service.impl.AccountServiceImpl">
         <property name="accountDao" ref="accountDao"/>
-<!--        <property name="txManager" ref="transactionManager"/>-->
+        <!--        <property name="txManager" ref="transactionManager"/>-->
     </bean>
 
     <!-- 配置Dao -->
@@ -47,10 +50,48 @@
         <property name="password" value="hezihao123"/>
     </bean>
 
-    <!-- 配置事务管理器 -->
-    <bean id="transactionManager" class="com.itheima.util.TransactionManager">
-        <property name="connectionUtils" ref="connectionUtils"/>
+    <!-- 配置，自定义的事务管理器 -->
+<!--    <bean id="transactionManager" class="com.itheima.util.CustomTransactionManager">-->
+<!--        <property name="connectionUtils" ref="connectionUtils"/>-->
+<!--    </bean>-->
+
+    <!--
+    Spring事务控制，XML配置步骤
+        1.配置事务管理器
+        2.配置事务的通知
+            属性：
+                id：给事务通知起一个唯一标识
+                transaction-manager：给事务通知提供一个事务管理器
+        3.配置AOP中的通用切入点表达式
+        4.建立切入点表达式和事务通知的对应关系
+        5.配置事务的属性
+    -->
+    <!-- 1.配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- 2.配置事务通知 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <!--
+        5.配置事务的属性
+            isolation：用于指定事务的隔离级别，默认是DEFAULT，表示使用数据库的默认隔离级别
+            propagation：用于指定事务的传播行为。默认是REQUIRED，表示一定会有事务，增删改查的选择。查询方法可以选择SUPPORTS
+            read-only：用于指定事务是否只读，只有查询方法才可以设置为true，默认为false，表示读写
+            timeout：用于指定事务的超时时间，默认值为-1，表示用不超时，如果指定了数值，以秒为单位
+            rollback-for：用于指定一个异常，当产生该异常时，事务回滚，产生其他异常时，事务不回滚，没有默认值，表示任何异常都回滚
+            no-rollback-for：用于指定一个市场，当产生该异常时，事务不回滚，产生其他异常时，事务回滚，没有默认值，表示任何异常都回滚
+        -->
+        <tx:attributes>
+            <tx:method name="transfer" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <!-- 3.切入点表达式 -->
+        <aop:pointcut id="pt1" expression="execution(* com.itheima.service.impl.*.*(..))"/>
+        <!-- 4.建立切入点表达式和事务通知的对应关系 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt1"/>
+    </aop:config>
 
     <!-- 配置连接工具类 -->
     <bean id="connectionUtils" class="com.itheima.util.ConnectionUtils">

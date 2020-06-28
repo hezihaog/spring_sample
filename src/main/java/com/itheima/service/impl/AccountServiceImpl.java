@@ -108,7 +108,6 @@ public class AccountServiceImpl implements IAccountService {
 //    public void setTxManager(TransactionManager txManager) {
 //        this.txManager = txManager;
 //    }
-
     @PostConstruct
     public void init() {
         System.out.println("创建...");
@@ -145,7 +144,7 @@ public class AccountServiceImpl implements IAccountService {
         //2.查询转入账户
         Account target = accountDao.findAccountByName(targetName);
         if (source.getMoney() < money) {
-            throw new RuntimeException("转出账号的金额不足" + money + "元");
+            throw new RuntimeException("转账失败，转出账号：" + sourceName + "的账户金额不足" + money + "元");
         }
         //3.转出账户扣钱
         source.setMoney(source.getMoney() - money);

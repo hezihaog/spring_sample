@@ -2,7 +2,6 @@ package com.itheima.util;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,11 @@ import org.springframework.stereotype.Component;
  * 事务AOP切面类
  */
 @Component
-@Aspect
+//由于使用Spring的事务管理，这个切面类就不需要了，需要需要使用自定义事务，再打开
+//@Aspect
 public class TransactionAspect {
     @Autowired
-    private TransactionManager txManager;
+    private CustomTransactionManager txManager;
 
     /**
      * 切入点表达式

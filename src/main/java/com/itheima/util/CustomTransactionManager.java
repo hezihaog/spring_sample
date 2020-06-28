@@ -8,7 +8,7 @@ import java.sql.SQLException;
  * 事务管理器，负责事务的开启、提交、回滚以及关闭连接
  */
 @Component
-public class TransactionManager {
+public class CustomTransactionManager {
     private ConnectionUtils connectionUtils;
 
     public void setConnectionUtils(ConnectionUtils connectionUtils) {
