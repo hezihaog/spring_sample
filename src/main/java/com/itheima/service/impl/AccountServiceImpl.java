@@ -4,9 +4,12 @@ import com.itheima.dao.IAccountDao;
 import com.itheima.domain.Account;
 import com.itheima.service.IAccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -75,6 +78,8 @@ import java.util.List;
 //@Component("accountService")
 @Service("accountService")
 //@Scope("prototype")
+//Spring注解方式的事务控制注解，默认都创建事务，并且不是只读事务
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 public class AccountServiceImpl implements IAccountService {
     /**
      * ---------------- 注解配置时使用 ----------------
@@ -84,8 +89,8 @@ public class AccountServiceImpl implements IAccountService {
 //    @Qualifier("accountDao1")
 //    private IAccountDao accountDao;
 
-//    @Resource(name = "accountDao1")
-//    private IAccountDao accountDao;
+    @Resource(name = "accountDao1")
+    private IAccountDao accountDao;
     /**
      * ---------------- 注解配置时使用 ----------------
      */
@@ -93,7 +98,7 @@ public class AccountServiceImpl implements IAccountService {
     /**
      * ---------------- Xml配置时使用 ----------------
      */
-    private IAccountDao accountDao;
+//    private IAccountDao accountDao;
 
     public void setAccountDao(IAccountDao accountDao) {
         this.accountDao = accountDao;
@@ -130,10 +135,15 @@ public class AccountServiceImpl implements IAccountService {
         accountDao.delete(accountId);
     }
 
+    /**
+     * 查询方法，事务配置单独设置为只读事务，不开启事务
+     */
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Account findAccountById(Integer accountId) {
         return accountDao.findById(accountId);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Account> findAllAccount() {
         return accountDao.findAll();
     }

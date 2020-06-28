@@ -1,5 +1,6 @@
 package com.itheima.config;
 
+import com.itheima.util.ConnectionUtils;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
@@ -36,6 +38,18 @@ public class JdbcConfig {
     @Scope("prototype")
     public QueryRunner createQueryRunner(@Qualifier("dataSource1") DataSource dataSource) {
         return new QueryRunner(dataSource);
+    }
+
+    @Bean(name = "jdbcTemplate")
+    public JdbcTemplate createJdbcTemple(@Qualifier("dataSource1") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    @Bean(name = "connectionUtils")
+    public ConnectionUtils createConnectionUtils(@Qualifier("dataSource1") DataSource dataSource) {
+        ConnectionUtils utils = new ConnectionUtils();
+        utils.setDataSource(dataSource);
+        return utils;
     }
 
     /**

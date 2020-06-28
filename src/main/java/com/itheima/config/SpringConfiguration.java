@@ -1,6 +1,7 @@
 package com.itheima.config;
 
 import org.springframework.context.annotation.*;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * 配置类，作用和bean.xml是一样的
@@ -34,10 +35,18 @@ import org.springframework.context.annotation.*;
  * 6.@EnableAspectJAutoProxy
  * 作用：用于开启AOP的代理
  */
+
+//表示当前是一个配置类
 @Configuration
-@Import(value = {JdbcConfig.class})
+//导入子配置类
+@Import(value = {JdbcConfig.class, TransactionConfig.class})
+//指定properties文件的位置
 @PropertySource("classpath:jdbcConfig.properties")
+//开启AOP的代理
 @EnableAspectJAutoProxy
+//开启Spring的声明式事务注解支持
+@EnableTransactionManagement
+//指定扫描包
 @ComponentScan(basePackages = {"com.itheima"})
 public class SpringConfiguration {
 }

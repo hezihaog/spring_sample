@@ -63,4 +63,9 @@ public class SpringJunitJavaConfigTest {
         account.setName("小何");
         accountService.updateAccount(account);
     }
+
+    @Test
+    public void testTransfer() {
+        accountService.transfer("小何", "小罗", 100f);
+    }
 }

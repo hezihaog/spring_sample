@@ -22,6 +22,7 @@ public class AccountDaoImpl implements IAccountDao {
     /**
      * 连接工具
      */
+    @Autowired
     private ConnectionUtils connectionUtils;
 
     public void setRunner(QueryRunner runner) {

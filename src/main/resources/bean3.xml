@@ -93,6 +93,14 @@
         <aop:advisor advice-ref="txAdvice" pointcut-ref="pt1"/>
     </aop:config>
 
+    <!--
+    Spring注解方式的声明式事务
+        1.配置事务管理器
+        2.开启spring对注解事务方式的支持
+        3.在需要事务支持的地方使用@Transactional注解
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
     <!-- 配置连接工具类 -->
     <bean id="connectionUtils" class="com.itheima.util.ConnectionUtils">
         <property name="dataSource" ref="dataSource"/>
